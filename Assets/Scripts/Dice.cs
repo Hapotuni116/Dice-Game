@@ -5,12 +5,14 @@ public class Dice : MonoBehaviour
 {
     [Header("Die Forces")]
     [SerializeField] private float torqueMinimum = 0.1f;
-    [SerializeField] private float torqueMaximum = 21f;
+    [SerializeField] private float torqueMaximum = 10f;
     [SerializeField] private float throwStrength = 10f;
+    
 
     private Transform _trans;
     private Rigidbody _rb;
-    private int  _num;
+    private int _num;
+
 
     /// <summary>
     /// This function is called when the object becomes enabled and active.
@@ -46,29 +48,39 @@ public class Dice : MonoBehaviour
         switch(upDown){
             case 1:
                 Debug.Log("1");
+                _num = 1;
                 break;
             case -1:
                 Debug.Log("6");
+                _num = 6;
                 break;
         }
 
         switch(LeftRight){
             case 1:
                 Debug.Log("4");
+                _num = 4;
                 break;
             case -1:
                 Debug.Log("3");
+                _num = 3;
                 break;
         }
 
         switch(frontBack){
             case 1:
                 Debug.Log("5");
+                _num = 5;
                 break;
             case -1:
                 Debug.Log("2");
+                _num = 2;
                 break;
         }
+    }
+
+    public int GetNum(){
+        return _num;
     }
 
 }
