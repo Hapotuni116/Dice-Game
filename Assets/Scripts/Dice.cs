@@ -29,6 +29,7 @@ public class Dice : MonoBehaviour
 
         _rb.AddTorque(_trans.forward * Random.Range(torqueMinimum, torqueMaximum) + _trans.up * Random.Range(torqueMinimum, torqueMaximum)+ _trans.right * Random.Range(torqueMinimum, torqueMaximum));
         StartCoroutine(WaitForStop());
+        
     }
 
     private IEnumerator WaitForStop(){
