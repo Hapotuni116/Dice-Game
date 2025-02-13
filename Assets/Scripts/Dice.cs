@@ -25,6 +25,7 @@ public class Dice : MonoBehaviour
     }
 
     public void RollDice(){
+        _num = 0;
         _rb.AddForce(Vector3.up *  throwStrength, ForceMode.Impulse);
 
         _rb.AddTorque(_trans.forward * Random.Range(torqueMinimum, torqueMaximum) + _trans.up * Random.Range(torqueMinimum, torqueMaximum)+ _trans.right * Random.Range(torqueMinimum, torqueMaximum));
@@ -48,33 +49,33 @@ public class Dice : MonoBehaviour
 
         switch(upDown){
             case 1:
-                Debug.Log("1");
+                // Debug.Log("1");
                 _num = 1;
                 break;
             case -1:
-                Debug.Log("6");
+                // Debug.Log("6");
                 _num = 6;
                 break;
         }
 
         switch(LeftRight){
             case 1:
-                Debug.Log("4");
+                // Debug.Log("4");
                 _num = 4;
                 break;
             case -1:
-                Debug.Log("3");
+                // Debug.Log("3");
                 _num = 3;
                 break;
         }
 
         switch(frontBack){
             case 1:
-                Debug.Log("5");
+                // Debug.Log("5");
                 _num = 5;
                 break;
             case -1:
-                Debug.Log("2");
+                // Debug.Log("2");
                 _num = 2;
                 break;
         }
