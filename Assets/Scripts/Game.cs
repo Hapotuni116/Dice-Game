@@ -7,7 +7,23 @@ public class Game : MonoBehaviour
     [SerializeField] private Dice dice1;
     [SerializeField] private Dice dice2;
     [SerializeField] private Text Point;
+    [SerializeField] private Text End;
+    [SerializeField] private Button resetButton;
+    [SerializeField] private Button exitButton;
+    [SerializeField] private Button rollButton;
 
+    private int point = 0;
+    private bool isFirstRoll = true;
+    private int currentPlayer = 0; // 0 = player, 1-3 = bots
+    private bool isEnd = false;
+
+    void Start()
+    {
+        resetButton.gameObject.SetActive(false);
+        exitButton.gameObject.SetActive(false);
+        resetButton.onClick.AddListener(ResetGame);
+        exitButton.onClick.AddListener(ExitGame);
+    }
     public void RollBothDice()
     {
         dice1.RollDice();
@@ -27,12 +43,85 @@ public class Game : MonoBehaviour
 
         int sum = dice1.GetNum() + dice2.GetNum();
         Debug.Log("Sum of both dice: " + sum);
-        Point.text = "Target = " + sum;
+
+        if (isFirstRoll)
+        {
+            if (sum == 7 || sum == 11)
+            {
+                End.text = currentPlayer == 0 ? "You win!" : "Bot " + currentPlayer + " wins!";
+                Debug.Log(currentPlayer == 0 ? "You win!" : "Bot " + currentPlayer + " wins!");
+                ShowEndButtons();
+            }
+            else if (sum == 2 || sum == 3 || sum == 12)
+            {
+                End.text = currentPlayer == 0 ? "You lose!" : "Bot " + currentPlayer + " loses!";
+                Debug.Log(currentPlayer == 0 ? "You lose!" : "Bot " + currentPlayer + " loses!");
+                ShowEndButtons();
+            }
+            else
+            {
+                point = sum;
+                Point.text = "Point: " + point + "\nCurrent Roll: " + sum;
+                isFirstRoll = false;
+                Debug.Log("Point is set to: " + point);
+            }
+        }
+        else
+        {
+            Point.text = "Point: " + point + "\nCurrent Roll: " + sum;
+            if (sum == point)
+            {
+                End.text = currentPlayer == 0 ? "You win!" : "Bot " + currentPlayer + " wins!";
+                Debug.Log(currentPlayer == 0 ? "You win!" : "Bot " + currentPlayer + " wins!");
+                ShowEndButtons();
+            }
+            else if (sum == 7)
+            {
+                End.text = currentPlayer == 0 ? "You lose!" : "Bot " + currentPlayer + " loses!";
+                Debug.Log(currentPlayer == 0 ? "You lose!" : "Bot " + currentPlayer + " loses!");
+                ShowEndButtons();
+            }
+        }
+
+        // Move to the next player
+        currentPlayer = (currentPlayer + 1) % 4;
+        if (currentPlayer != 0)
+        {
+            StartCoroutine(BotTurn());
+        }
+        else
+        {
+            rollButton.gameObject.SetActive(true);
+        }
+    }
+
+    private IEnumerator BotTurn()
+    {
+        yield return new WaitForSeconds(1.0f); // Wait for a second before the bot rolls
+        RollBothDice();
+    }
+
+    private void ShowEndButtons()
+    {
+        resetButton.gameObject.SetActive(true);
+        exitButton.gameObject.SetActive(true);
+        rollButton.gameObject.SetActive(false);
+    }
+
+    public void ResetGame()
+    {
+        point = 0;
+        isFirstRoll = true;
+        Point.text = "Target: 7 or 11";
+        End.text = "";
+        resetButton.gameObject.SetActive(false);
+        exitButton.gameObject.SetActive(false);
+        rollButton.gameObject.SetActive(true);
+        currentPlayer = 0;
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }
-
-//7 or 11 equals win on first roll
-//2, 3, 12 equals lose on first roll
-//after first roll, that becomes the point
-//roll the point to win
-//roll a 7 to lose
