@@ -11,6 +11,7 @@ public class Game : MonoBehaviour
     [SerializeField] private Button resetButton;
     [SerializeField] private Button exitButton;
     [SerializeField] private Button rollButton;
+    [SerializeField] private Text Turn;
 
     private int point = 0;
     private bool isFirstRoll = true;
@@ -21,14 +22,15 @@ public class Game : MonoBehaviour
     {
         resetButton.gameObject.SetActive(false);
         exitButton.gameObject.SetActive(false);
-        resetButton.onClick.AddListener(ResetGame);
-        exitButton.onClick.AddListener(ExitGame);
+        Turn.text = "Your Turn";
     }
     public void RollBothDice()
     {
-        dice1.RollDice();
-        dice2.RollDice();
-        StartCoroutine(CalculateSum());
+        if(!isEnd){
+            dice1.RollDice();
+            dice2.RollDice();
+            StartCoroutine(CalculateSum());
+        }
     }
 
     private IEnumerator CalculateSum()
@@ -50,12 +52,14 @@ public class Game : MonoBehaviour
             {
                 End.text = currentPlayer == 0 ? "You win!" : "Bot " + currentPlayer + " wins!";
                 Debug.Log(currentPlayer == 0 ? "You win!" : "Bot " + currentPlayer + " wins!");
+                isEnd = true;
                 ShowEndButtons();
             }
             else if (sum == 2 || sum == 3 || sum == 12)
             {
                 End.text = currentPlayer == 0 ? "You lose!" : "Bot " + currentPlayer + " loses!";
                 Debug.Log(currentPlayer == 0 ? "You lose!" : "Bot " + currentPlayer + " loses!");
+                isEnd = true;
                 ShowEndButtons();
             }
             else
@@ -73,25 +77,33 @@ public class Game : MonoBehaviour
             {
                 End.text = currentPlayer == 0 ? "You win!" : "Bot " + currentPlayer + " wins!";
                 Debug.Log(currentPlayer == 0 ? "You win!" : "Bot " + currentPlayer + " wins!");
+                isEnd = true;
                 ShowEndButtons();
             }
             else if (sum == 7)
             {
                 End.text = currentPlayer == 0 ? "You lose!" : "Bot " + currentPlayer + " loses!";
                 Debug.Log(currentPlayer == 0 ? "You lose!" : "Bot " + currentPlayer + " loses!");
+                isEnd = true;
                 ShowEndButtons();
             }
         }
 
-        // Move to the next player
-        currentPlayer = (currentPlayer + 1) % 4;
-        if (currentPlayer != 0)
-        {
-            StartCoroutine(BotTurn());
-        }
-        else
-        {
-            rollButton.gameObject.SetActive(true);
+
+        if(!isEnd){
+            // Move to the next player
+            currentPlayer = (currentPlayer + 1) % 4;
+            if (currentPlayer != 0)
+            {
+                Turn.text = currentPlayer == 0 ? "Your Turn" : "Bot " + currentPlayer + "'s Turn";
+                rollButton.gameObject.SetActive(false);
+                StartCoroutine(BotTurn());
+            }
+            else
+            {
+                Turn.text = "Your Turn";
+                rollButton.gameObject.SetActive(true);
+            }
         }
     }
 
@@ -103,6 +115,7 @@ public class Game : MonoBehaviour
 
     private void ShowEndButtons()
     {
+        Turn.text = "";
         resetButton.gameObject.SetActive(true);
         exitButton.gameObject.SetActive(true);
         rollButton.gameObject.SetActive(false);
@@ -118,6 +131,7 @@ public class Game : MonoBehaviour
         exitButton.gameObject.SetActive(false);
         rollButton.gameObject.SetActive(true);
         currentPlayer = 0;
+        isEnd = false;
     }
 
     public void ExitGame()
