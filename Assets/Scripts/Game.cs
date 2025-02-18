@@ -18,12 +18,20 @@ public class Game : MonoBehaviour
     private int currentPlayer = 0; // 0 = player, 1-3 = bots
     private bool isEnd = false;
 
+    /// <summary>
+    /// This function is called when the script instance is being loaded.
+    /// It initializes the game state and UI elements.
+    /// </summary>
     void Start()
     {
         resetButton.gameObject.SetActive(false);
         exitButton.gameObject.SetActive(false);
         Turn.text = "Your Turn";
     }
+
+    /// <summary>
+    /// Rolls both dice and starts the coroutine to calculate the sum.
+    /// </summary>
     public void RollBothDice()
     {
         if(!isEnd){
@@ -33,6 +41,10 @@ public class Game : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Coroutine that waits for both dice to stop rolling and calculates the sum.
+    /// Determines the game outcome based on the sum.
+    /// </summary>
     private IEnumerator CalculateSum()
     {
         // Wait until both dice have stopped rolling
@@ -89,7 +101,6 @@ public class Game : MonoBehaviour
             }
         }
 
-
         if(!isEnd){
             // Move to the next player
             currentPlayer = (currentPlayer + 1) % 4;
@@ -107,12 +118,18 @@ public class Game : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Coroutine that simulates the bot's turn by waiting for a second before rolling the dice.
+    /// </summary>
     private IEnumerator BotTurn()
     {
         yield return new WaitForSeconds(1.0f); // Wait for a second before the bot rolls
         RollBothDice();
     }
 
+    /// <summary>
+    /// Shows the end game buttons (reset and exit) and hides the roll button.
+    /// </summary>
     private void ShowEndButtons()
     {
         Turn.text = "";
@@ -121,6 +138,9 @@ public class Game : MonoBehaviour
         rollButton.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Resets the game state to the initial conditions.
+    /// </summary>
     public void ResetGame()
     {
         point = 0;
@@ -134,6 +154,9 @@ public class Game : MonoBehaviour
         isEnd = false;
     }
 
+    /// <summary>
+    /// Exits the game application.
+    /// </summary>
     public void ExitGame()
     {
         Application.Quit();
